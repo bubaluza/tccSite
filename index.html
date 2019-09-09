@@ -66,36 +66,43 @@
                 margin-left: -15rem;
             }
 
-            #container{
+            #container, #container2{
+                width: 50%;
                 height: 100%;
+            }
+            #loader{
+                position: fixed;
+                top: 0;
                 width: 100%;
+                height: 100%;
+                background: gray;
+                z-index: 1000;
+                opacity: 0.5;
+                display: none;
+            }
+            a{
+                color: inherit;
             }
         }
     </style>
 </head>
 
 <body>
-
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark" style="height: 50px">
+<div id="loader">
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped progress-bar-animated " id="progresso" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+</div>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark shadow p-3" style="height: 50px">
     <!-- Brand -->
-    <a class="navbar-brand" href="#">Logo</a>
+    <a class="navbar-brand" href="#">Análise de Placas Solares</a>
 
     <!-- Links -->
-    <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-            <a class="nav-link" href="#">Link 1</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">Link 2</a>
-        </li>
-
-    </ul>
-
 </nav>
 
 <div class="container-fluid">
     <div class="row">
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+        <nav class="col-md-1 bg-light sidebar">
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
@@ -106,14 +113,14 @@
                                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                                 <polyline points="9 22 9 12 15 12 15 22"></polyline>
                             </svg>
-                            Atualizar <span class="sr-only">(current)</span>
+                            Analisar <span class="sr-only">(current)</span>
                         </a>
                     </li>
                 </ul>
             </div>
         </nav>
 
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+        <main role="main" class="col-md-11 ml-sm-auto col-lg-11 pt-3 px-4">
             <div class="chartjs-size-monitor"
                  style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
                 <div class="chartjs-size-monitor-expand"
@@ -125,28 +132,75 @@
                     <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
                 </div>
             </div>
+
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-                <h1 class="h2">Gráfico</h1>
+                <h1 class="h2">Gráficos</h1>
+                <div class="col-md-3 d-none">
+                    <label>Resposta</label>
+                    <input type="text" readonly id="resposta" class="form-control">
+                </div>
                 <div class="btn-toolbar mb-2 mb-md-0">
                     <div class="btn-group mr-2">
-                        <button class="btn btn-sm btn-outline-secondary">Share</button>
+                        <button class="btn btn-sm btn-outline-secondary">Export</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="height:100%;">
+            <div id="container"></div>
+            <div id="container2"></div>
+            </div>
+
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                <h1 class="h2"></h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group mr-2">
                         <button class="btn btn-sm btn-outline-secondary">Export</button>
                     </div>
                 </div>
             </div>
 
-            <div id="container"></div>
-
             <h2>Análise</h2>
-            <div class="table-responsive">
-                <div class="col-md-3">
-                    <label>Resposta</label>
-                    <input type="text" readonly id="resposta" class="form-control">
+                <div class="table-responsive">
+                    <div class="col-md-10">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Máxima Potência</label>
+                                <input type="text" readonly id="maxima_potencia" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <label>Tensão de Máxima Potência</label>
+                                <input type="text" readonly id="tensao_maxima_potencia" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <label>Corrente de Máxima Potência</label>
+                                <input type="text" readonly id="corrente_maxima_potencia" class="form-control">
+                            </div>
 
+                            <div class="col-md-3">
+                                <label>Corrente de Curto-Circuito</label>
+                                <input type="text" readonly id="corrente_cc" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <label>Tensão de Circuito aberto</label>
+                                <input type="text" readonly id="tensao_ca" class="form-control">
+                            </div>
+
+                            <div class="col-md-3">
+                                <label>Resistência em Serie</label>
+                                <input type="text" readonly id="rs" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <label>Resistência em Paralelo</label>
+                                <input type="text" readonly id="rp" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <label>Capacitância de Difusão</label>
+                                <input type="text" readonly id="cd" class="form-control">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
         </main>
-
     </div>
 </div>
 
@@ -156,6 +210,7 @@
 <script type="text/javascript">
     var interval;
     var chart;
+    var chart2;
     $("#menu-toggle").click(function (e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
@@ -164,19 +219,17 @@
     anychart.onDocumentLoad(function() {
 
         chart = anychart.cartesian();
+        chart2 = anychart.cartesian();
 
         chart.animation(true);
         chart.xScale(anychart.scales.linear());
         chart.marker();
         chart.defaultSeriesType("marker");
-
         chart.padding([10, 20, 5, 20]);
-
         chart.crosshair()
             .enabled(true)
             .yLabel(false)
             .yStroke(null);
-
         chart.tooltip().positionMode('point');
 
         chart.title("IV");
@@ -185,17 +238,36 @@
         chart.yAxis(1).title('Potência(W)');
         chart.yAxis(1).orientation('Right');
 
+
+        chart2.animation(true);
+        chart2.xScale(anychart.scales.linear());
+        chart2.line();
+        chart2.defaultSeriesType("line");
+        chart2.padding([10, 20, 5, 20]);
+        chart2.crosshair()
+            .enabled(true)
+            .yLabel(false)
+            .yStroke(null);
+        chart2.tooltip().positionMode('point');
+
+        chart2.title("Dinâmico");
+        chart2.xAxis().title('Tempo(uS)');
+        chart2.yAxis().title('Tensão(V)');
+
         chart.xAxis().labels().padding(2);
+        chart2.xAxis().labels().padding(2);
         // set chart container and draw
         chart.container("container").draw();
+        chart2.container("container2").draw();
 
         $('#atualizar').click(function () {
+            $('#progresso').css('width', '0%');
+            $('#loader').show(1000);
             $.ajax({
                 type: 'get',
                 url: '/ajaxSet',
-
                 success: (response) => {
-                    interval = setInterval(verificaResposta, 1000);
+                    interval = setInterval(verificaResposta, 200);
                     $('#resposta').val("Não chegou");
                 },
                 error: (response) => {
@@ -211,22 +283,45 @@
             type: 'get',
             url: '/ajaxMain',
             success: (response) =>{
-                if(!response.chegou){
-                    $('#resposta').val("Não chegou");
+                if(response.erro){
+                    $('#loader').hide(1000);
+                    alert("Houve um erro.");
+                    clearInterval(interval);
+                }else if(!response.chegou){
+                    $('#resposta').val(response.progresso);
+                    $('#progresso').css('width', response.progresso+'%');
                     return;
                 }else{
                     $('#resposta').val("Chegou");
+
                     var iv = anychart.data.set(response.dadosIv);
                     var pot = anychart.data.set(response.pot);
+                    var din = anychart.data.set(response.din);
+
                     var ivSerie = iv.mapAs({x: 'voltage', value: 'current'});
-                    var potSerie = pot.mapAs({x: 'voltage', value: 'power'})
+                    var potSerie = pot.mapAs({x: 'voltage', value: 'power'});
+                    var dinSerie = din.mapAs({x: 'time', value: 'voltage'});
+                    chart.removeSeriesAt(0);
+                    chart2.removeSeriesAt(0);
                     chart.addSeries(ivSerie);
-                    var tooltipIv = chart.getSeries(1).tooltip();
-                    var tooltipPower = chart.getSeries(2).tooltip();
-                    tooltipIv.format("Tensão: {%voltage}V \nCorrente: {%current}}A");
-                    tooltipPower.format("Tensão: {%voltage}V \nPotência: {%power}W");
+                    chart2.addSeries(dinSerie);
+                    var tooltipIv = chart.getSeries(0).tooltip();
+                    var tooltipDin = chart2.getSeries(0).tooltip();
+                    // var tooltipPower = chart.getSeries(2).tooltip();
+                    tooltipIv.format("Tensão: {%voltage}V \nCorrente: {%current}A");
+                    tooltipDin.format("Tempo: {%time}uS \nTensão: {%voltage}V");
+                    // tooltipPower.format("Tensão: {%voltage}V \nPotência: {%power}W");
                     // chart.data(response.dados);
+                    $('#maxima_potencia').val(response.maxima_potencia)
+                    $('#tensao_maxima_potencia').val(response.tensao_maxima_potencia)
+                    $('#corrente_maxima_potencia').val(response.corrente_maxima_potencia)
+                    $('#corrente_cc').val(response.corrente_cc)
+                    $('#tensao_ca').val(response.tensao_ca)
+                    $('#rs').val(response.rs)
+                    $('#rp').val(response.rp)
+                    $('#cd').val(response.cd)
                     clearInterval(interval);
+                    $('#loader').hide(1000);
                 }
             },
             error: (response) => {
