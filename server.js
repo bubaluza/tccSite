@@ -12,7 +12,7 @@ var parsejson;
 let i, maior, result;
 let po=[], ponto=[], pontos=[], chav0=[], chav1=[];//vetores
 let Vth, Voc, Isc, Vmp, Imp, Pmp, n, Io, Rso, Rsho, Rs, Rsh, Iph, FF, S0, S1, C;
-let pcVoc = 0.9, pcIsc = 0.95, pcS0i = 0.5, pcS0f = 0.8, pcS1i = 0, pcS1f = 0.6;
+let pcVoc = 0.4, pcIsc = 0.1, pcS0i = 0.6, pcS0f = 0.92, pcS1i = 0, pcS1f = 0.6;
 let potencia;
 let progresso;
 let erro=false;
@@ -87,7 +87,7 @@ parser.on('data', line=> {
             }
 
             for (i = 0; i < parsejson.length - 1; i++)//calculo potencia
-                po[i] = parsejson[i].voltage * parsejson[i].current
+                po[i] = parsejson[i].voltage * parsejson[i].current;
             for (i = 0; i < parsejson.length - 1; i++) {
                 potencia[i] = {};
                 potencia[i].voltage = parsejson[i].voltage;
@@ -128,7 +128,7 @@ function extractRes(){
     console.log("\nTensao x Corrente para 10% Voc");
     pontos=[];
     console.log(Voc*pcVoc);
-    for(i = 0; parsejson[i].voltage > (Voc*pcVoc); i++){
+    for(i = 0; parsejson[i].current < (Isc*pcIsc); i++){
         let ponto =[];
         ponto[0] = parsejson[i].voltage;
         ponto[1] = parsejson[i].current;
@@ -140,12 +140,14 @@ function extractRes(){
     console.log("Rso: "+Rso);
     pontos=[];
     console.log("\nTensao x Corrente para 10% Isc");
-    for(i=parsejson.length-1; parsejson[i].current > (Isc*pcIsc) ; i--){
+    for(i=parsejson.length-1; parsejson[i].voltage < (Voc*pcVoc) ; i--){
         let ponto=[];
-        ponto[0] = parsejson[i].voltage;
-        ponto[1] = parsejson[i].current;
-        pontos.push(ponto);
-        console.log(parsejson[i].voltage+" "+parsejson[i].current);
+        if(parsejson[i].voltage!=parsejson[i-1].voltage) {
+            ponto[0] = parsejson[i].voltage;
+            ponto[1] = parsejson[i].current;
+            pontos.push(ponto);
+            console.log(parsejson[i].voltage + " " + parsejson[i].current);
+        }
     }
     result = regression.linear(pontos, {precision: 5});
     Rsho = -1/result.equation[0];
@@ -185,13 +187,16 @@ function extractCap(){
 }
 
 function calcPmp(){
+    let imaior=0;
+
     for(i = 0; i < parsejson.length; i++){
-        if(po[i] > po[i-1])
-            maior = i;
+        if(po[i]>po[imaior]){
+            imaior=i;
+        }
     }
-    Vmp = parsejson[maior].voltage;
-    Imp = parsejson[maior].current;
-    Pmp = po[maior];
+    Vmp = parsejson[imaior].voltage;
+    Imp = parsejson[imaior].current;
+    Pmp = po[imaior];
     console.log('potencia: '+Pmp);
 }
 
