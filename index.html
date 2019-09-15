@@ -25,6 +25,7 @@
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
     <script src="node_modules/chart.js/dist/chart.js"></script>
+    <script src="node_modules/mathjs/dist/math.min.js"></script>
 <!--    <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js?hcode=c11e6e3cfefb406e8ce8d99fa8368d33"></script>-->
 <!--    <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js?hcode=c11e6e3cfefb406e8ce8d99fa8368d33"></script>-->
 <!--    <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js?hcode=c11e6e3cfefb406e8ce8d99fa8368d33"></script>-->
@@ -237,13 +238,58 @@
                 label: 'IV',
                 yAxisID: 'corrente',
                 backgroundColor: '#003bff',
+                data: [{
+                    x: 1,
+                    y: 100e-3
+                },{
+                    x:3,
+                    y:220e-3
+                }]
             },{
                 label: 'Potencia',
                 yAxisID: 'potencia',
                 backgroundColor: 'red',
-            }]
+                data: [{
+                    x: 4,
+                    y: 11
+                },{
+                    x: 9,
+                    y:0
+                }]
+            }],
+
         },
         options: {
+            tooltips: {
+                callbacks: {
+                    title: function(tooltipItem, data) {
+                        // console.log(tooltipItem);
+                        // console.log(data);
+                        return data['datasets'][tooltipItem[0].datasetIndex].label;
+                    },
+                    label: function(tooltipItem, data) {
+                        let x = parseFloat((tooltipItem.label)).toFixed(4);
+                        return x+' V';
+                    },
+                    afterLabel: function(tooltipItem, data) {
+                        let y;
+                        if (tooltipItem.datasetIndex == 0){
+                            y = math.format(parseFloat((tooltipItem.value)),{notation: 'engineering', precision: 4});
+                            y = y+' A';
+                        }else{
+                            y = math.format(parseFloat((tooltipItem.value)),{notation: 'engineering', precision: 4});
+                            y = y+' W';
+                        }
+                        return y;
+                    }
+                },
+                backgroundColor: '#000000',
+                titleFontSize: 14,
+                titleFontColor: '#ffeb00',
+                bodyFontColor: '#08f86d',
+                bodyFontSize: 12,
+                displayColors: false
+            },
             title: {
                 display: true,
                 text: 'IV'
@@ -299,10 +345,38 @@
                 borderColor: '#9e00ff',
                 backgroundColor: '#d60cff',
                 lineTension: 0,
-                fill: false
+                fill: false,
+                data: [{
+                    x: 4,
+                    y: 11
+                },{
+                    x: 9,
+                    y:0
+                }]
             }]
         },
         options: {
+            tooltips: {
+                callbacks: {
+                    title: function(tooltipItem, data) {
+                        return data['datasets'][tooltipItem[0].datasetIndex].label;
+                    },
+                    label: function(tooltipItem, data) {
+                        let x = parseFloat((tooltipItem.label)).toFixed(0);
+                        return x+' uS';
+                    },
+                    afterLabel: function(tooltipItem, data) {
+                        let y = parseFloat((tooltipItem.value)).toFixed(4)+' V'
+                        return y;
+                    }
+                },
+                backgroundColor: '#000000',
+                titleFontSize: 14,
+                titleFontColor: '#ffeb00',
+                bodyFontColor: '#08f86d',
+                bodyFontSize: 12,
+                displayColors: false
+            },
             title: {
                 display: true,
                 text: 'Dinâmico'
@@ -375,33 +449,14 @@
                     dinamico.data.datasets[0].data = dadosDin;
                     estatico.update();
                     dinamico.update();
-                    // var iv = anychart.data.set(response.dadosIv);
-                    // var pot = anychart.data.set(response.pot);
-                    // var din = anychart.data.set(response.din);
-                    //
-                    // var ivSerie = iv.mapAs({x: 'voltage', value: 'current'});
-                    // var potSerie = pot.mapAs({x: 'voltage', value: 'power'});
-                    // var dinSerie = din.mapAs({x: 'time', value: 'voltage'});
-                    // chart.removeSeriesAt(0);
-                    // chart2.removeSeriesAt(0);
-                    // chart.addSeries(ivSerie);
-                    // // chart.addSeries(potSerie);
-                    // chart2.addSeries(dinSerie);
-                    // var tooltipIv = chart.getSeries(0).tooltip();
-                    // var tooltipDin = chart2.getSeries(0).tooltip();
-                    // // var tooltipPower = chart.getSeries(2).tooltip();
-                    // tooltipIv.format("Tensão: {%voltage}V \nCorrente: {%current}A");
-                    // tooltipDin.format("Tempo: {%time}uS \nTensão: {%voltage}V");
-                    // tooltipPower.format("Tensão: {%voltage}V \nPotência: {%power}W");
-                    // chart.data(response.dados);
-                    $('#maxima_potencia').val(response.maxima_potencia)
-                    $('#tensao_maxima_potencia').val(response.tensao_maxima_potencia)
-                    $('#corrente_maxima_potencia').val(response.corrente_maxima_potencia)
-                    $('#corrente_cc').val(response.corrente_cc)
-                    $('#tensao_ca').val(response.tensao_ca)
-                    $('#rs').val(response.rs)
-                    $('#rp').val(response.rp)
-                    $('#cd').val(response.cd)
+                    $('#maxima_potencia').val(math.format(response.maxima_potencia,{precision: 4})+' W');
+                    $('#tensao_maxima_potencia').val(math.format(response.tensao_maxima_potencia,{precision: 4})+' V');
+                    $('#corrente_maxima_potencia').val(math.format(response.corrente_maxima_potencia,{notation: 'engineering', precision: 4})+' A');
+                    $('#corrente_cc').val(math.format(response.corrente_cc,{notation: 'engineering', precision: 4})+' A');
+                    $('#tensao_ca').val(math.format(response.tensao_ca,{precision: 4})+' V');
+                    $('#rs').val(math.format(response.rs,{precision: 4})+' Ω');
+                    $('#rp').val(math.format(response.rp,{ precision: 4})+' Ω');
+                    $('#cd').val(math.format(response.cd,{notation: 'engineering', precision: 4})+' F')
                     clearInterval(interval);
                     $('#loader').fadeOut(1000);
                 }

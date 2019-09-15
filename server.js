@@ -23,7 +23,7 @@ var parsejson;
 let i, maior, result;
 let po=[], ponto=[], pontos=[], chav0=[], chav1=[];//vetores
 let Vth, Voc, Isc, Vmp, Imp, Pmp, n, Io, Rso, Rsho, Rs, Rsh, Iph, FF, S0, S1, C;
-let pcVoc = 0.4, pcIsc = 0.1, pcS0i = 0.6, pcS0f = 0.92, pcS1i = 0, pcS1f = 0.6;
+let pcVoc = 0.4, pcIsc = 0.1, pcS0i = 0.6, pcS0f = 0.92, pcS1i = 0, pcS1f = 0.4;
 let potencia;
 let progresso;
 let erro=false;
