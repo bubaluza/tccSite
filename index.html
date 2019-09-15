@@ -1,6 +1,14 @@
 <!doctype html>
 <html lang="br">
 <head>
+    <style>
+        a:disabled{
+            cursor: not-allowed;
+        }
+       .sidebar a:hover{
+            background: aliceblue;
+        }
+    </style>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -16,301 +24,374 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
-    <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js?hcode=c11e6e3cfefb406e8ce8d99fa8368d33"></script>
-    <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js?hcode=c11e6e3cfefb406e8ce8d99fa8368d33"></script>
-    <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js?hcode=c11e6e3cfefb406e8ce8d99fa8368d33"></script>
-    <link href="https://cdn.anychart.com/releases/v8/css/anychart-ui.min.css?hcode=c11e6e3cfefb406e8ce8d99fa8368d33" type="text/css" rel="stylesheet">
-    <link href="https://cdn.anychart.com/releases/v8/fonts/css/anychart-font.min.css?hcode=c11e6e3cfefb406e8ce8d99fa8368d33" type="text/css" rel="stylesheet">
-    <style>
-        body {
-            overflow-x: hidden;
-        }
+    <script src="node_modules/chart.js/dist/chart.js"></script>
+<!--    <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js?hcode=c11e6e3cfefb406e8ce8d99fa8368d33"></script>-->
+<!--    <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js?hcode=c11e6e3cfefb406e8ce8d99fa8368d33"></script>-->
+<!--    <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js?hcode=c11e6e3cfefb406e8ce8d99fa8368d33"></script>-->
+<!--    <link href="https://cdn.anychart.com/releases/v8/css/anychart-ui.min.css?hcode=c11e6e3cfefb406e8ce8d99fa8368d33"-->
+<!--          type="text/css" rel="stylesheet">-->
+<!--    <link href="https://cdn.anychart.com/releases/v8/fonts/css/anychart-font.min.css?hcode=c11e6e3cfefb406e8ce8d99fa8368d33"-->
+<!--          type="text/css" rel="stylesheet">-->
+</head>
 
-        #sidebar-wrapper {
-            min-height: 100vh;
-            margin-left: -15rem;
-            -webkit-transition: margin .25s ease-out;
-            -moz-transition: margin .25s ease-out;
-            -o-transition: margin .25s ease-out;
-            transition: margin .25s ease-out;
-        }
-
-        #sidebar-wrapper .sidebar-heading {
-            padding: 0.875rem 1.25rem;
-            font-size: 1.2rem;
-        }
-
-        #sidebar-wrapper .list-group {
-            width: 15rem;
-        }
-
-        #page-content-wrapper {
-            min-width: 100vw;
-        }
-
-        #wrapper.toggled #sidebar-wrapper {
-            margin-left: 0;
-        }
-
-        @media (min-width: 768px) {
-            #sidebar-wrapper {
-                margin-left: 0;
-            }
-
-            #page-content-wrapper {
-                min-width: 0;
-                width: 100%;
-            }
-
-            #wrapper.toggled #sidebar-wrapper {
-                margin-left: -15rem;
-            }
-
-            #container, #container2{
-                width: 50%;
-                height: 100%;
-            }
-            #loader{
-                position: fixed;
+<body>
+<!-- Loader -->
+<div id="loader" style="position: fixed;
                 top: 0;
                 width: 100%;
                 height: 100%;
                 background: gray;
                 z-index: 1000;
                 opacity: 0.5;
-                display: none;
-            }
-            a{
-                color: inherit;
-            }
-        }
-    </style>
-</head>
-
-<body>
-<div id="loader">
+                display: none;">
     <div class="progress">
         <div class="progress-bar progress-bar-striped progress-bar-animated " id="progresso" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
 </div>
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark shadow p-3" style="height: 50px">
-    <!-- Brand -->
-    <a class="navbar-brand" href="#">Análise de Placas Solares</a>
 
-    <!-- Links -->
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Análise de Placas Solares</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+            aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    </button>
 </nav>
 
+<!--Container-->
 <div class="container-fluid">
+
     <div class="row">
-        <nav class="col-md-1 bg-light sidebar">
+
+        <!--Sidebar-->
+        <nav class="col-md-1  d-md-block bg-light sidebar" style="padding: 0;">
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="atualizar" href="#">
+                    <li class="nav-item" >
+                        <a class="nav-link active disabled" id="atualizar" href="#">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                  stroke-linejoin="round" class="feather feather-home">
                                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                                 <polyline points="9 22 9 12 15 12 15 22"></polyline>
                             </svg>
-                            Analisar <span class="sr-only">(current)</span>
+                            Analisar
                         </a>
                     </li>
                 </ul>
             </div>
         </nav>
 
+        <!--Content-->
         <main role="main" class="col-md-11 ml-sm-auto col-lg-11 pt-3 px-4">
-            <div class="chartjs-size-monitor"
-                 style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
-                <div class="chartjs-size-monitor-expand"
-                     style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                    <div style="position:absolute;width:100000px;height:1000000px;left:0;top:0"></div>
-                </div>
-                <div class="chartjs-size-monitor-shrink"
-                     style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                    <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
-                </div>
+            <div class="alert alert-danger" id="usb_falha" role="alert"style="display: none">
+                A conexão com a USB <strong>FALHOU</strong>. Recoloque  a USB e reinicie o servidor.
             </div>
+            <div class="alert alert-success" id="usb_sucesso"  role="alert" style="display: none">
+                USB conectada com Sucesso.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!--                <div class="chartjs-size-monitor">-->
+            <!--                    <div class="chartjs-size-monitor-expand"-->
+            <!--                         style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">-->
+            <!--                        <div style="position:absolute;width:100000px;height:1000000px;left:0;top:0"></div>-->
+            <!--                    </div>-->
+            <!--                    <div class="chartjs-size-monitor-shrink"-->
+            <!--                         style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">-->
+            <!--                        <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>-->
+            <!--                    </div>-->
+            <!--                </div>-->
 
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-                <h1 class="h2">Gráficos</h1>
-                <div class="col-md-3 d-none">
-                    <label>Resposta</label>
-                    <input type="text" readonly id="resposta" class="form-control">
+            <h2>Gráficos</h2>
+<!--            <div class="row">-->
+<!--                <div class="col-sm-12 col-md-6 text-center">-->
+<!--                    <div id="graph-1" style="height: 400px"></div>-->
+<!--                    <br>-->
+<!--                    <button class="btn btn-sm btn-outline-secondary">Export</button>-->
+<!--                </div>-->
+<!--                <div class="col-sm-12 col-md-6 text-center">-->
+<!--                    <div id="graph-2" style="height: 400px"></div>-->
+<!--                    <br>-->
+<!--                    <button class="btn btn-sm btn-outline-secondary">Export</button>-->
+<!--                </div>-->
+<!--            </div> -->
+            <div class="row">
+                <div class="col-sm-12 col-md-6 text-center">
+                    <canvas id="chart-1" width="400"></canvas>
+                    <br>
+                    <button class="btn btn-sm btn-outline-secondary">Exportar CSV</button>
                 </div>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <div class="btn-group mr-2">
-                        <button class="btn btn-sm btn-outline-secondary">Export</button>
-                    </div>
-                </div>
-            </div>
-            <div class="row" style="height:100%;">
-            <div id="container"></div>
-            <div id="container2"></div>
-            </div>
-
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-                <h1 class="h2"></h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <div class="btn-group mr-2">
-                        <button class="btn btn-sm btn-outline-secondary">Export</button>
-                    </div>
+                <div class="col-sm-12 col-md-6 text-center">
+                    <canvas id="chart-2" width="400"></canvas>
+                    <br>
+                    <button class="btn btn-sm btn-outline-secondary">Exportar CSV</button>
                 </div>
             </div>
 
             <h2>Análise</h2>
-                <div class="table-responsive">
-                    <div class="col-md-10">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <label>Máxima Potência</label>
-                                <input type="text" readonly id="maxima_potencia" class="form-control">
-                            </div>
-                            <div class="col-md-3">
-                                <label>Tensão de Máxima Potência</label>
-                                <input type="text" readonly id="tensao_maxima_potencia" class="form-control">
-                            </div>
-                            <div class="col-md-3">
-                                <label>Corrente de Máxima Potência</label>
-                                <input type="text" readonly id="corrente_maxima_potencia" class="form-control">
-                            </div>
 
-                            <div class="col-md-3">
-                                <label>Corrente de Curto-Circuito</label>
-                                <input type="text" readonly id="corrente_cc" class="form-control">
-                            </div>
-                            <div class="col-md-3">
-                                <label>Tensão de Circuito aberto</label>
-                                <input type="text" readonly id="tensao_ca" class="form-control">
-                            </div>
-
-                            <div class="col-md-3">
-                                <label>Resistência em Serie</label>
-                                <input type="text" readonly id="rs" class="form-control">
-                            </div>
-                            <div class="col-md-3">
-                                <label>Resistência em Paralelo</label>
-                                <input type="text" readonly id="rp" class="form-control">
-                            </div>
-                            <div class="col-md-3">
-                                <label>Capacitância de Difusão</label>
-                                <input type="text" readonly id="cd" class="form-control">
-                            </div>
+            <div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label for="maxima_potencia">Máxima Potência</label>
+                            <input id="maxima_potencia" type="text" readonly class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label for="tensao_maxima_potencia">Tensão de Máxima Potência</label>
+                            <input id="tensao_maxima_potencia" type="text" readonly class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label for="corrente_maxima_potencia">Corrente de Máxima Potência</label>
+                            <input type="text" readonly id="corrente_maxima_potencia" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label for="corrente_cc">Corrente de Curto-Circuito</label>
+                            <input type="text" readonly id="corrente_cc" class="form-control">
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label for="tensao_ca">Tensão de Circuito aberto</label>
+                            <input type="text" readonly id="tensao_ca" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label for="rs">Resistência em Serie</label>
+                            <input type="text" readonly id="rs" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label for="rp">Resistência em Paralelo</label>
+                            <input type="text" readonly id="rp" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label for="cd">Capacitância de Difusão</label>
+                            <input type="text" readonly id="cd" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 </div>
-
-
-</body>
-</html>
 <script type="text/javascript">
-    var interval;
-    var chart;
-    var chart2;
-    $("#menu-toggle").click(function (e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
+    var csvEstatico;
+    var csvDinamico;
+    $(document).ready(function() {
+        $.ajax({
+            type: 'get',
+            url: '/ajaxConecao',
+            success: (response) => {
+                if(!response.conexao){
+                    $("#usb_falha").show('1000');
+                }else{
+                    $("#usb_sucesso").show('1000');
+                    $("#atualizar").removeClass('disabled');
+                    setTimeout(function () {
+                        $("#usb_sucesso").fadeOut('1000');
+                    }, 5000);
+                }
+            },
+            error: (response) => {
+                console.log(response)
+            }
+        });
     });
-
-    anychart.onDocumentLoad(function() {
-
-        chart = anychart.cartesian();
-        chart2 = anychart.cartesian();
-
-        chart.animation(true);
-        chart.xScale(anychart.scales.linear());
-        chart.marker();
-        chart.defaultSeriesType("marker");
-        chart.padding([10, 20, 5, 20]);
-        chart.crosshair()
-            .enabled(true)
-            .yLabel(false)
-            .yStroke(null);
-        chart.tooltip().positionMode('point');
-
-        chart.title("IV");
-        chart.xAxis().title('Tensão(V)');
-        chart.yAxis(0).title('Corrente(A)');
-        chart.yAxis(1).title('Potência(W)');
-        chart.yAxis(1).orientation('Right');
-
-
-        chart2.animation(true);
-        chart2.xScale(anychart.scales.linear());
-        chart2.line();
-        chart2.defaultSeriesType("line");
-        chart2.padding([10, 20, 5, 20]);
-        chart2.crosshair()
-            .enabled(true)
-            .yLabel(false)
-            .yStroke(null);
-        chart2.tooltip().positionMode('point');
-
-        chart2.title("Dinâmico");
-        chart2.xAxis().title('Tempo(uS)');
-        chart2.yAxis().title('Tensão(V)');
-
-        chart.xAxis().labels().padding(2);
-        chart2.xAxis().labels().padding(2);
-        // set chart container and draw
-        chart.container("container").draw();
-        chart2.container("container2").draw();
 
         $('#atualizar').click(function () {
             $('#progresso').css('width', '0%');
-            $('#loader').show(1000);
+            $('#loader').fadeIn(1000);
             $.ajax({
                 type: 'get',
                 url: '/ajaxSet',
                 success: (response) => {
                     interval = setInterval(verificaResposta, 200);
-                    $('#resposta').val("Não chegou");
                 },
                 error: (response) => {
                     console.log(response)
                 }
             });
         });
+
+    var ctx1 = $('#chart-1');
+    var ctx2 = $('#chart-2');
+
+    var estatico = new Chart(ctx1, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'IV',
+                yAxisID: 'corrente',
+                backgroundColor: '#003bff',
+            },{
+                label: 'Potencia',
+                yAxisID: 'potencia',
+                backgroundColor: 'red',
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'IV'
+            },
+            scales: {
+                yAxes: [{
+                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                    display: true,
+                    position: 'left',
+                    id: 'corrente',
+                    ticks: {
+                        beginAtZero: true
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Corrente (A)'
+                    }
+                }, {
+                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                    display: true,
+                    position: 'right',
+                    id: 'potencia',
+                    ticks: {
+                        beginAtZero: true
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Potência (W)'
+                    },
+
+                }],
+                xAxes: [{
+                    type: 'linear',
+                    display: true,
+                    position: 'bottom',
+                    ticks: {
+                        beginAtZero: true
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Tensão (V)'
+                    }
+                }]
+            }
+        }
     });
+
+    var dinamico = new Chart(ctx2, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'dinâmico',
+                borderColor: '#9e00ff',
+                backgroundColor: '#d60cff',
+                lineTension: 0,
+                fill: false
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Dinâmico'
+            },
+            scales: {
+                xAxes: [{
+                    type: 'linear',
+                    position: 'bottom',
+                    id: 'dinamico',
+                    ticks: {
+                        beginAtZero: true
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Tempo (uS)'
+                    }
+                }],
+                yAxes: [{
+                    type: 'linear',
+                    position: 'bottom',
+                    ticks: {
+                        beginAtZero: true
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Tensão (V)'
+                    }
+                }]
+            }
+        }
+    });
+
 
 
     function verificaResposta() {
         $.ajax({
             type: 'get',
             url: '/ajaxMain',
-            success: (response) =>{
-                if(response.erro){
-                    $('#loader').hide(1000);
+            success: (response) => {
+                if (response.erro) {
+                    $('#loader').fadeOut(1000);
                     alert("Houve um erro.");
                     clearInterval(interval);
-                }else if(!response.chegou){
+                } else if (!response.chegou) {
                     $('#resposta').val(response.progresso);
-                    $('#progresso').css('width', response.progresso+'%');
+                    $('#progresso').css('width', response.progresso + '%');
                     return;
-                }else{
-                    $('#resposta').val("Chegou");
+                } else if(response.chegou){
 
-                    var iv = anychart.data.set(response.dadosIv);
-                    var pot = anychart.data.set(response.pot);
-                    var din = anychart.data.set(response.din);
-
-                    var ivSerie = iv.mapAs({x: 'voltage', value: 'current'});
-                    var potSerie = pot.mapAs({x: 'voltage', value: 'power'});
-                    var dinSerie = din.mapAs({x: 'time', value: 'voltage'});
-                    chart.removeSeriesAt(0);
-                    chart2.removeSeriesAt(0);
-                    chart.addSeries(ivSerie);
-                    // chart.addSeries(potSerie);
-                    chart2.addSeries(dinSerie);
-                    var tooltipIv = chart.getSeries(0).tooltip();
-                    var tooltipDin = chart2.getSeries(0).tooltip();
-                    // var tooltipPower = chart.getSeries(2).tooltip();
-                    tooltipIv.format("Tensão: {%voltage}V \nCorrente: {%current}A");
-                    tooltipDin.format("Tempo: {%time}uS \nTensão: {%voltage}V");
+                    var dadosIv = response.dadosIv.map(function (d) {
+                        var t = {};
+                        t.x= d.voltage;
+                        t.y= d.current;
+                        return t;
+                    });
+                    var dadosPot = response.pot.map(function (d) {
+                        var t = {};
+                        t.x= d.voltage;
+                        t.y= d.power;
+                        return t;
+                    });
+                    var dadosDin = response.din.map(function (d) {
+                        var t = {};
+                        t.x= d.time;
+                        t.y= d.voltage;
+                        return t;
+                    });
+                    estatico.data.datasets[0].data = dadosIv;
+                    estatico.data.datasets[1].data = dadosPot;
+                    dinamico.data.datasets[0].data = dadosDin;
+                    estatico.update();
+                    dinamico.update();
+                    // var iv = anychart.data.set(response.dadosIv);
+                    // var pot = anychart.data.set(response.pot);
+                    // var din = anychart.data.set(response.din);
+                    //
+                    // var ivSerie = iv.mapAs({x: 'voltage', value: 'current'});
+                    // var potSerie = pot.mapAs({x: 'voltage', value: 'power'});
+                    // var dinSerie = din.mapAs({x: 'time', value: 'voltage'});
+                    // chart.removeSeriesAt(0);
+                    // chart2.removeSeriesAt(0);
+                    // chart.addSeries(ivSerie);
+                    // // chart.addSeries(potSerie);
+                    // chart2.addSeries(dinSerie);
+                    // var tooltipIv = chart.getSeries(0).tooltip();
+                    // var tooltipDin = chart2.getSeries(0).tooltip();
+                    // // var tooltipPower = chart.getSeries(2).tooltip();
+                    // tooltipIv.format("Tensão: {%voltage}V \nCorrente: {%current}A");
+                    // tooltipDin.format("Tempo: {%time}uS \nTensão: {%voltage}V");
                     // tooltipPower.format("Tensão: {%voltage}V \nPotência: {%power}W");
                     // chart.data(response.dados);
                     $('#maxima_potencia').val(response.maxima_potencia)
@@ -322,7 +403,7 @@
                     $('#rp').val(response.rp)
                     $('#cd').val(response.cd)
                     clearInterval(interval);
-                    $('#loader').hide(1000);
+                    $('#loader').fadeOut(1000);
                 }
             },
             error: (response) => {
@@ -330,6 +411,6 @@
             }
         })
     }
-
-
 </script>
+</body>
+</html>

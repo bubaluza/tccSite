@@ -4,7 +4,18 @@ const SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline');
 const regression = require('regression');
 
-const port = new SerialPort('COM3', {baudRate: 115200});
+// const port = new SerialPort('COM3', {baudRate: 115200});
+var port;
+var usbConecao = false;
+SerialPort.list(function (err, portas) {
+    portas.forEach(function(porta) {
+        if(porta.manufacturer=='Silicon Labs'){
+            port = new SerialPort(porta.comName, {baudRate: 115200});
+            port.pipe(parser);
+            usbConecao=true;
+        }
+    });
+});
 const parser = new Readline();
 var dadoPronto = false;
 var parsejson2;
@@ -16,9 +27,6 @@ let pcVoc = 0.4, pcIsc = 0.1, pcS0i = 0.6, pcS0f = 0.92, pcS1i = 0, pcS1f = 0.6;
 let potencia;
 let progresso;
 let erro=false;
-
-
-port.pipe(parser);
 
 const app = express();
 app.use(express.static('.'));
@@ -34,6 +42,12 @@ app.get('/ajaxSet', (req, res) => {
         port.write('r');
         progresso=0;
         res.send(resposta);
+});
+
+app.get('/ajaxConecao', (req,res)=>{
+    resposta = {};
+    resposta.conexao = usbConecao;
+    res.send(resposta);
 });
 
 app.get('/ajaxMain', (req, res) => {
@@ -66,7 +80,6 @@ app.get('/ajaxMain', (req, res) => {
     }
 });
 
-
 parser.on('data', line=> {
     const json = JSON.parse(line);
     console.log(json);
@@ -79,16 +92,16 @@ parser.on('data', line=> {
             pontos = [];
             parsejson = json.dataIv;
             parsejson2 = json.dataDin;
-            for (let k = 0; k < parsejson.length - 1; k++) {
+            for (let k = 0; k < parsejson.length; k++) {
                 if (parsejson[k].voltage == -1) {
                     parsejson = parsejson.slice(0, k);
                     break;
                 }
             }
 
-            for (i = 0; i < parsejson.length - 1; i++)//calculo potencia
+            for (i = 0; i < parsejson.length ; i++)//calculo potencia
                 po[i] = parsejson[i].voltage * parsejson[i].current;
-            for (i = 0; i < parsejson.length - 1; i++) {
+            for (i = 0; i < parsejson.length; i++) {
                 potencia[i] = {};
                 potencia[i].voltage = parsejson[i].voltage;
                 potencia[i].power = po[i];
@@ -161,7 +174,7 @@ function extractCap(){
     pontos=[];
     console.log("S0");
     for(i = 0; i < (chav0.length)*pcS0i; i++);
-    for(i; i < (chav0.length-1)*pcS0f; i++){
+    for(i; i < (chav0.length)*pcS0f; i++){
         let ponto=[];
         ponto[0] = chav0[i].time;
         ponto[1] = chav0[i].voltage;
@@ -207,4 +220,7 @@ function calcCelik(){
     Rs = Rso-n*Vth*Math.exp(-Voc/(n*Vth))/Io;
     Iph = Isc*(1+Rs/Rsh)+Io*(Math.exp(Isc*Rs/(n*Vth)-1));
     FF = (Vmp*Imp)/(Voc*Isc);
+    console.log('n: '+n);
+    console.log('Io: '+Io);
+    console.log('Iph: '+Iph);
 }
