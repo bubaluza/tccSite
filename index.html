@@ -162,6 +162,42 @@
 <script type="text/javascript">
     var csvEstatico;
     var csvDinamico;
+    String.prototype.prefixo = function(){
+        string = this;
+        var n = string.search('e');
+        if(n!=-1){
+            var exp = string.substring(n+1, string.length);
+            switch (exp) {
+                case '+0':
+                    return string.substring(0, n);
+                    break;
+                case '3':
+                    return string.substring(0, n)+'K'
+                    break;
+                case '6':
+                    return string.substring(0, n)+'M'
+                    break;
+                case '9':
+                    return string.substring(0, n)+'G'
+                    break;
+                case '-3':
+                    return string.substring(0, n)+'m'
+                    break;
+                case '-6':
+                    return string.substring(0, n)+'µ'
+                    break;
+                case '-9':
+                    return string.substring(0, n)+'n'
+                    break
+                case '-12':
+                    return string.substring(0, n)+'p'
+                    break;
+            }
+        }else{
+            return string;
+        }
+    }
+
     $(document).ready(function() {
         $.ajax({
             type: 'get',
@@ -228,10 +264,10 @@
                     afterLabel: function(tooltipItem, data) {
                         let y;
                         if (tooltipItem.datasetIndex == 0){
-                            y = math.format(parseFloat((tooltipItem.value)),{notation: 'engineering', precision: 4});
+                            y = math.format(parseFloat((tooltipItem.value)),{notation: 'engineering', precision: 4}).prefixo();
                             y = y+' A';
                         }else{
-                            y = math.format(parseFloat((tooltipItem.value)),{notation: 'engineering', precision: 4});
+                            y = math.format(parseFloat((tooltipItem.value)),{notation: 'engineering', precision: 4}).prefixo();
                             y = y+' W';
                         }
                         return y;
@@ -373,7 +409,6 @@
                     return;
                 } else if(response.chegou){
                     csvEstatico = 'voltage,current,power\n';
-                    console.log(response)
                     response.dadosIv.forEach(function (e, k) {
                         csvEstatico += e.voltage;
                         csvEstatico += ','+ e.current;
@@ -382,7 +417,6 @@
                     })
                     csvDinamico = 'time,voltage\n';
                     response.din.forEach(function (e) {
-                        console.log(e.voltage)
                         csvDinamico += e.time;
                         csvDinamico += ','+ e.voltage;
                         csvDinamico += '\n';
@@ -411,14 +445,14 @@
                     dinamico.data.datasets[0].data = dadosDin;
                     estatico.update();
                     dinamico.update();
-                    $('#maxima_potencia').val(math.format(response.maxima_potencia,{precision: 4})+' W');
-                    $('#tensao_maxima_potencia').val(math.format(response.tensao_maxima_potencia,{precision: 4})+' V');
-                    $('#corrente_maxima_potencia').val(math.format(response.corrente_maxima_potencia,{notation: 'engineering', precision: 4})+' A');
-                    $('#corrente_cc').val(math.format(response.corrente_cc,{notation: 'engineering', precision: 4})+' A');
-                    $('#tensao_ca').val(math.format(response.tensao_ca,{precision: 4})+' V');
-                    $('#rs').val(math.format(response.rs,{precision: 4})+' Ω');
-                    $('#rp').val(math.format(response.rp,{ precision: 4})+' Ω');
-                    $('#cd').val(math.format(response.cd,{notation: 'engineering', precision: 4})+' F')
+                    $('#maxima_potencia').val(math.format(response.maxima_potencia,{precision: 4}).prefixo()+' W');
+                    $('#tensao_maxima_potencia').val(math.format(response.tensao_maxima_potencia,{precision: 4}).prefixo()+' V');
+                    $('#corrente_maxima_potencia').val(math.format(response.corrente_maxima_potencia,{notation: 'engineering', precision: 4}).prefixo()+' A');
+                    $('#corrente_cc').val(math.format(response.corrente_cc,{notation: 'engineering', precision: 4}).prefixo()+' A');
+                    $('#tensao_ca').val(math.format(response.tensao_ca,{precision: 4}).prefixo()+' V');
+                    $('#rs').val(math.format(response.rs,{precision: 4}).prefixo()+' Ω');
+                    $('#rp').val(math.format(response.rp,{ precision: 4}).prefixo()+' Ω');
+                    $('#cd').val(math.format(response.cd,{notation: 'engineering', precision: 4}).prefixo()+' F')
                     clearInterval(interval);
                     $('#loader').fadeOut(1000);
                 }
