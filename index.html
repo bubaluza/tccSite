@@ -346,7 +346,7 @@
                     },
                     label: function(tooltipItem, data) {
                         let x = parseFloat((tooltipItem.label)).toFixed(0);
-                        return x+' uS';
+                        return x+'µ S';
                     },
                     afterLabel: function(tooltipItem, data) {
                         let y = parseFloat((tooltipItem.value)).toFixed(4)+' V'
@@ -374,7 +374,7 @@
                     },
                     scaleLabel: {
                         display: true,
-                        labelString: 'Tempo (uS)'
+                        labelString: 'Tempo (µ S)'
                     }
                 }],
                 yAxes: [{
@@ -408,6 +408,7 @@
                     $('#progresso').css('width', response.progresso + '%');
                     return;
                 } else if(response.chegou){
+                    console.log(response)
                     csvEstatico = 'voltage,current,power\n';
                     response.dadosIv.forEach(function (e, k) {
                         csvEstatico += e.voltage;
