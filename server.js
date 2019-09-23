@@ -4,7 +4,6 @@ const SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline');
 const regression = require('regression');
 
-// const port = new SerialPort('COM3', {baudRate: 115200});
 var port;
 var usbConecao = false;
 SerialPort.list(function (err, portas) {
