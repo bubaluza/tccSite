@@ -73,6 +73,17 @@
                             Analisar
                         </a>
                     </li>
+                    <li class="nav-item easter" style="display: none">
+                        <a class="nav-link active" id="chavear" href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                 stroke-linejoin="round" class="feather feather-home">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                            </svg>
+                            Dinam
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -239,6 +250,18 @@
             },
             error: (response) => {
                 console.log(response)
+            }
+        });
+    });
+    $('#chavear').click(function () {
+        $.ajax({
+            type: 'get',
+            url: '/ajaxChavear',
+            success: (response) => {
+                console.log('chaveado');
+            },
+            error: (response) => {
+                console.log(response);
             }
         });
     });
@@ -493,7 +516,7 @@
         } else {
             alert('Nenhum dado para criar o arquico CSV.');
         }
-    })
+    });
 
     $('#dinamicoCsvDownload').click(function () {
         if (csvDinamico) {
@@ -505,7 +528,39 @@
         } else {
             alert('Nenhum dado para criar o arquico CSV.');
         }
-    })
+    });
+    let cont = 0;
+    $(window).keydown(function (e) {
+
+        switch (e.which) {
+            case 38:
+                if(cont == 0 || cont == 1){
+                    cont++;
+                }else cont = 0;
+                break;
+            case 40:
+                if(cont ==2 || cont==3){
+                    cont++;
+                }else cont =0;
+                break;
+            case 37:
+                if(cont ==4 || cont==5){
+                    cont++;
+                }else cont =0;
+                break;
+            case 39:
+                if(cont ==6){
+                    cont++;
+                }else if (cont ==7){
+                    $('.easter').toggle();
+                    cont = 0;
+                }else cont =0;
+                break;
+            default:
+                cont = 0;
+                break;
+        }
+    });
 </script>
 </body>
 </html>

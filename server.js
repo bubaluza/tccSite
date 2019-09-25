@@ -54,6 +54,12 @@ app.get('/ajaxConecao', (req,res)=>{
     res.send(resposta);
 });
 
+app.get('/ajaxChavear', (req,res)=>{
+    resposta = {};
+    port.write('d');
+    res.send(resposta);
+})
+
 app.get('/ajaxMain', (req, res) => {
     if(erro){
         resposta={};
