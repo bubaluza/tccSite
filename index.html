@@ -2,10 +2,11 @@
 <html lang="br">
 <head>
     <style>
-        a:disabled{
+        a:disabled {
             cursor: not-allowed;
         }
-       .sidebar a:hover{
+
+        .sidebar a:hover {
             background: aliceblue;
         }
     </style>
@@ -39,7 +40,8 @@
                 opacity: 0.5;
                 display: none;">
     <div class="progress">
-        <div class="progress-bar progress-bar-striped progress-bar-animated " id="progresso" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="progress-bar progress-bar-striped progress-bar-animated " id="progresso" role="progressbar"
+             style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
 </div>
 
@@ -60,7 +62,7 @@
         <nav class="col-md-1  d-md-block bg-light sidebar" style="padding: 0;">
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
-                    <li class="nav-item" >
+                    <li class="nav-item">
                         <a class="nav-link active disabled" id="atualizar" href="#">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -77,10 +79,10 @@
 
         <!--Content-->
         <main role="main" class="col-md-11 ml-sm-auto col-lg-11 pt-3 px-4">
-            <div class="alert alert-danger" id="usb_falha" role="alert"style="display: none">
-                A conexão com a USB <strong>FALHOU</strong>. Recoloque  a USB e reinicie o servidor.
+            <div class="alert alert-danger" id="usb_falha" role="alert" style="display: none">
+                A conexão com a USB <strong>FALHOU</strong>. Recoloque a USB e reinicie o servidor.
             </div>
-            <div class="alert alert-success" id="usb_sucesso"  role="alert" style="display: none">
+            <div class="alert alert-success" id="usb_sucesso" role="alert" style="display: none">
                 USB conectada com Sucesso.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -159,53 +161,60 @@
         </main>
     </div>
 </div>
+<footer id="sticky-footer" class="py-2 bg-dark text-white-50">
+    <div class="container text-center">
+        Universidade Estadual de Ponta Grossa - 2019 <br>
+        &copy; Created By: <span style="color: white;">Gabriel J. Schiller</span> & <span style="color: white;">Victor P. Iritsu</span>
+
+
+    </div>
+</footer>
 <script type="text/javascript">
     var csvEstatico;
     var csvDinamico;
-    String.prototype.prefixo = function(){
+    String.prototype.prefixo = function () {
         string = this;
         var n = string.search('e');
-        if(n!=-1){
-            var exp = string.substring(n+1, string.length);
+        if (n != -1) {
+            var exp = string.substring(n + 1, string.length);
             switch (exp) {
-                case '+0':
-                    return string.substring(0, n);
+                case '+3':
+                    return string.substring(0, n) + 'K';
                     break;
-                case '3':
-                    return string.substring(0, n)+'K'
+                case '+6':
+                    return string.substring(0, n) + 'M';
                     break;
-                case '6':
-                    return string.substring(0, n)+'M'
-                    break;
-                case '9':
-                    return string.substring(0, n)+'G'
+                case '+9':
+                    return string.substring(0, n) + 'G';
                     break;
                 case '-3':
-                    return string.substring(0, n)+'m'
+                    return string.substring(0, n) + 'm';
                     break;
                 case '-6':
-                    return string.substring(0, n)+'µ'
+                    return string.substring(0, n) + 'µ';
                     break;
                 case '-9':
-                    return string.substring(0, n)+'n'
+                    return string.substring(0, n) + 'n';
                     break
                 case '-12':
-                    return string.substring(0, n)+'p'
+                    return string.substring(0, n) + 'p';
                     break;
+                default:
+                    return string.substring(0, n);
             }
-        }else{
+        } else {
             return string;
         }
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         $.ajax({
             type: 'get',
             url: '/ajaxConecao',
             success: (response) => {
-                if(!response.conexao){
+                if (!response.conexao) {
                     $("#usb_falha").show('1000');
-                }else{
+                } else {
                     $("#usb_sucesso").show('1000');
                     $("#atualizar").removeClass('disabled');
                     setTimeout(function () {
@@ -219,20 +228,20 @@
         });
     });
 
-        $('#atualizar').click(function () {
-            $('#progresso').css('width', '0%');
-            $('#loader').fadeIn(1000);
-            $.ajax({
-                type: 'get',
-                url: '/ajaxSet',
-                success: (response) => {
-                    interval = setInterval(verificaResposta, 200);
-                },
-                error: (response) => {
-                    console.log(response)
-                }
-            });
+    $('#atualizar').click(function () {
+        $('#progresso').css('width', '0%');
+        $('#loader').fadeIn(1000);
+        $.ajax({
+            type: 'get',
+            url: '/ajaxSet',
+            success: (response) => {
+                interval = setInterval(verificaResposta, 200);
+            },
+            error: (response) => {
+                console.log(response)
+            }
         });
+    });
 
     var ctx1 = $('#chart-1');
     var ctx2 = $('#chart-2');
@@ -244,31 +253,36 @@
                 label: 'IV',
                 yAxisID: 'corrente',
                 backgroundColor: '#003bff',
-            },{
-                label: 'Potencia',
+            }, {
+                label: 'Potência',
                 yAxisID: 'potencia',
                 backgroundColor: 'red',
             }],
-
         },
         options: {
             tooltips: {
                 callbacks: {
-                    title: function(tooltipItem, data) {
+                    title: function (tooltipItem, data) {
                         return data['datasets'][tooltipItem[0].datasetIndex].label;
                     },
-                    label: function(tooltipItem, data) {
+                    label: function (tooltipItem, data) {
                         let x = parseFloat((tooltipItem.label)).toFixed(4);
-                        return x+' V';
+                        return x + ' V';
                     },
-                    afterLabel: function(tooltipItem, data) {
+                    afterLabel: function (tooltipItem, data) {
                         let y;
-                        if (tooltipItem.datasetIndex == 0){
-                            y = math.format(parseFloat((tooltipItem.value)),{notation: 'engineering', precision: 4}).prefixo();
-                            y = y+' A';
-                        }else{
-                            y = math.format(parseFloat((tooltipItem.value)),{notation: 'engineering', precision: 4}).prefixo();
-                            y = y+' W';
+                        if (tooltipItem.datasetIndex == 0) {
+                            y = math.format(parseFloat((tooltipItem.value)), {
+                                notation: 'engineering',
+                                precision: 4
+                            }).prefixo();
+                            y = y + ' A';
+                        } else {
+                            y = math.format(parseFloat((tooltipItem.value)), {
+                                notation: 'engineering',
+                                precision: 4
+                            }).prefixo();
+                            y = y + ' W';
                         }
                         return y;
                     }
@@ -282,7 +296,7 @@
             },
             title: {
                 display: true,
-                text: 'IV'
+                text: 'Curva IV e Potência'
             },
             scales: {
                 yAxes: [{
@@ -341,15 +355,15 @@
         options: {
             tooltips: {
                 callbacks: {
-                    title: function(tooltipItem, data) {
+                    title: function (tooltipItem, data) {
                         return data['datasets'][tooltipItem[0].datasetIndex].label;
                     },
-                    label: function(tooltipItem, data) {
+                    label: function (tooltipItem, data) {
                         let x = parseFloat((tooltipItem.label)).toFixed(0);
-                        return x+'µ S';
+                        return x + 'µ S';
                     },
-                    afterLabel: function(tooltipItem, data) {
-                        let y = parseFloat((tooltipItem.value)).toFixed(4)+' V'
+                    afterLabel: function (tooltipItem, data) {
+                        let y = parseFloat((tooltipItem.value)).toFixed(4) + ' V'
                         return y;
                     }
                 },
@@ -362,7 +376,7 @@
             },
             title: {
                 display: true,
-                text: 'Dinâmico'
+                text: 'Tensão na placa conforme Chaveamento'
             },
             scales: {
                 xAxes: [{
@@ -393,7 +407,6 @@
     });
 
 
-
     function verificaResposta() {
         $.ajax({
             type: 'get',
@@ -407,38 +420,38 @@
                     $('#resposta').val(response.progresso);
                     $('#progresso').css('width', response.progresso + '%');
                     return;
-                } else if(response.chegou){
+                } else if (response.chegou) {
                     console.log(response)
                     csvEstatico = 'voltage,current,power\n';
                     response.dadosIv.forEach(function (e, k) {
                         csvEstatico += e.voltage;
-                        csvEstatico += ','+ e.current;
-                        csvEstatico += ','+ response.pot[k].power;
+                        csvEstatico += ',' + e.current;
+                        csvEstatico += ',' + response.pot[k].power;
                         csvEstatico += '\n';
                     })
                     csvDinamico = 'time,voltage\n';
                     response.din.forEach(function (e) {
                         csvDinamico += e.time;
-                        csvDinamico += ','+ e.voltage;
+                        csvDinamico += ',' + e.voltage;
                         csvDinamico += '\n';
                     });
 
                     var dadosIv = response.dadosIv.map(function (d) {
                         var t = {};
-                        t.x= d.voltage;
-                        t.y= d.current;
+                        t.x = d.voltage;
+                        t.y = d.current;
                         return t;
                     });
                     var dadosPot = response.pot.map(function (d) {
                         var t = {};
-                        t.x= d.voltage;
-                        t.y= d.power;
+                        t.x = d.voltage;
+                        t.y = d.power;
                         return t;
                     });
                     var dadosDin = response.din.map(function (d) {
                         var t = {};
-                        t.x= d.time;
-                        t.y= d.voltage;
+                        t.x = d.time;
+                        t.y = d.voltage;
                         return t;
                     });
                     estatico.data.datasets[0].data = dadosIv;
@@ -446,14 +459,20 @@
                     dinamico.data.datasets[0].data = dadosDin;
                     estatico.update();
                     dinamico.update();
-                    $('#maxima_potencia').val(math.format(response.maxima_potencia,{precision: 4}).prefixo()+' W');
-                    $('#tensao_maxima_potencia').val(math.format(response.tensao_maxima_potencia,{precision: 4}).prefixo()+' V');
-                    $('#corrente_maxima_potencia').val(math.format(response.corrente_maxima_potencia,{notation: 'engineering', precision: 4}).prefixo()+' A');
-                    $('#corrente_cc').val(math.format(response.corrente_cc,{notation: 'engineering', precision: 4}).prefixo()+' A');
-                    $('#tensao_ca').val(math.format(response.tensao_ca,{precision: 4}).prefixo()+' V');
-                    $('#rs').val(math.format(response.rs,{precision: 4}).prefixo()+' Ω');
-                    $('#rp').val(math.format(response.rp,{ precision: 4}).prefixo()+' Ω');
-                    $('#cd').val(math.format(response.cd,{notation: 'engineering', precision: 4}).prefixo()+' F')
+                    $('#maxima_potencia').val(math.format(response.maxima_potencia, {precision: 4}).prefixo() + ' W');
+                    $('#tensao_maxima_potencia').val(math.format(response.tensao_maxima_potencia, {precision: 4}).prefixo() + ' V');
+                    $('#corrente_maxima_potencia').val(math.format(response.corrente_maxima_potencia, {
+                        notation: 'engineering',
+                        precision: 4
+                    }).prefixo() + ' A');
+                    $('#corrente_cc').val(math.format(response.corrente_cc, {
+                        notation: 'engineering',
+                        precision: 4
+                    }).prefixo() + ' A');
+                    $('#tensao_ca').val(math.format(response.tensao_ca, {precision: 4}).prefixo() + ' V');
+                    $('#rs').val(math.format(response.rs, {precision: 4}).prefixo() + ' Ω');
+                    $('#rp').val(math.format(response.rp, {precision: 4}).prefixo() + ' Ω');
+                    $('#cd').val(math.format(response.cd, {notation: 'engineering', precision: 4}).prefixo() + ' F')
                     clearInterval(interval);
                     $('#loader').fadeOut(1000);
                 }
@@ -465,25 +484,25 @@
     }
 
     $('#estaticoCsvDownload').click(function () {
-        if(csvEstatico){
+        if (csvEstatico) {
             var csv = document.createElement('a');
             csv.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvEstatico);
             csv.target = '_blank';
             csv.download = 'estatico.csv';
             csv.click();
-        }else{
+        } else {
             alert('Nenhum dado para criar o arquico CSV.');
         }
     })
 
     $('#dinamicoCsvDownload').click(function () {
-        if(csvDinamico) {
+        if (csvDinamico) {
             var csv = document.createElement('a');
             csv.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvDinamico);
             csv.target = '_blank';
             csv.download = 'dinamico.csv';
             csv.click();
-        }else{
+        } else {
             alert('Nenhum dado para criar o arquico CSV.');
         }
     })
