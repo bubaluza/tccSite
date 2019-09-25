@@ -26,6 +26,7 @@ let pcVoc = 0.4, pcIsc = 0.1, pcS0i = 0.6, pcS0f = 0.92, pcS1i = 0, pcS1f = 0.4;
 let potencia;
 let progresso;
 let erro=false;
+let medindo=false;
 
 const app = express();
 app.use(express.static('.'));
@@ -38,8 +39,12 @@ app.listen(8080, function() {
 app.get('/ajaxSet', (req, res) => {
         resposta = {};
         resposta.chegou = false;
-        port.write('r');
-        progresso=0;
+        if(!medindo){
+            port.write('r');
+            progresso=0;
+            medindo = true;
+        }
+
         res.send(resposta);
 });
 
@@ -80,8 +85,13 @@ app.get('/ajaxMain', (req, res) => {
 });
 
 parser.on('data', line=> {
-    const json = JSON.parse(line);
-    console.log(json);
+    try{
+        const json = JSON.parse(line);
+        console.log(json);
+    } catch (e) {
+        console.log('Leitura não é json');
+    }
+
     if(json.data == true){
         try {
             po = [];
@@ -123,6 +133,7 @@ parser.on('data', line=> {
             extractRes();
             extractCap();
             dadoPronto = true;
+            medindo = false;
         } catch (e){
             console.log(e);
             erro = true;
