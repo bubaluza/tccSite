@@ -116,29 +116,29 @@ parser.on('data', line => {
 
     if (json.data) {
         try {
-            po = [];
             potencia = [];
-            chav0 = [];
-            chav1 = [];
-            pontos = [];
             ivMeasure = json.dataIv;
             dinamicMeasure = json.dataDin;
 
-            ivMeasure = ivMeasure.filter(({voltage}) => voltage !== -1);
+            let ivMeasure = ivMeasure.filter(({voltage}) => voltage !== -1);
 
-            po = ivMeasure.map(({voltage, current}) => ({
-                voltage: voltage,
+            let powerMeasure = ivMeasure.map(({voltage, current}) => ({
+                voltage,
+                current,
                 power: voltage * current
             }));
 
-            chav0 = first_chav = dinamicMeasure.filter( ({switching}) => switching === 0 );
-            chav1 = second_chav = dinamicMeasure.filter( ({switching}) => switching === 1 );
+            const {Vmp, Imp, Pmp} = calcPmp(powerMeasure);
+
+            let chav0 = first_chav = dinamicMeasure.filter( ({switching}) => switching === 0 );
+            let chav1 = second_chav = dinamicMeasure.filter( ({switching}) => switching === 1 );
 
             Voc = ivMeasure[0].voltage;
             Isc = ivMeasure[ivMeasure.length - 1].current;
 
-            extractRes();
-            extractCap();
+            const {Rso, Rsho} = extractRes(ivMeasure, Voc, Isc);
+            calcCelik(Rsho, Rso, Vmp, Imp, Pmp, Voc, Isc);
+            extractCap(first_chav, second_chav);
             dadoPronto = true;
             measuring = false;
         } catch (e) {
@@ -154,83 +154,66 @@ parser.on('data', line => {
 });
 
 
-function extractRes() {
-    console.log("\nTensao x Corrente para 10% Voc");
-    pontos = [];
-    console.log(Voc * pcVoc);
-    for (i = 0; ivMeasure[i].current < (Isc * pcIsc); i++) {
-        let ponto = [];
-        ponto[0] = ivMeasure[i].voltage;
-        ponto[1] = ivMeasure[i].current;
-        pontos.push(ponto);
-        console.log(ivMeasure[i].voltage + " " + ivMeasure[i].current);
-    }
-    result = regression.linear(pontos, {precision: 5});
-    Rso = -1 / result.equation[0];
-    console.log("Rso: " + Rso);
-    pontos = [];
-    console.log("\nTensao x Corrente para 10% Isc");
-    for (i = ivMeasure.length - 1; ivMeasure[i].voltage < (Voc * pcVoc); i--) {
-        let ponto = [];
-        if (ivMeasure[i].voltage != ivMeasure[i - 1].voltage) {
-            ponto[0] = ivMeasure[i].voltage;
-            ponto[1] = ivMeasure[i].current;
-            pontos.push(ponto);
-            console.log(ivMeasure[i].voltage + " " + ivMeasure[i].current);
+function extractRes(ivMeasure, Voc, Isc) {
+    let points = [];
+    ivMeasure.forEach( measure => {
+        if(measure.current < (Isc * pcIsc) ) {
+            points = [...points, [measure.voltage, measure.current]];    
         }
-    }
-    result = regression.linear(pontos, {precision: 5});
-    Rsho = -1 / result.equation[0];
-    console.log("Rsho: " + Rsho);
-    calcPmp();
-    calcCelik();
-}
-
-function extractCap() {
-    console.log("\nTempo x Tensão");
-    pontos = [];
-    console.log("S0");
-    for (i = 0; i < (chav0.length) * pcS0i; i++) ;
-    for (i; i < (chav0.length) * pcS0f; i++) {
-        let ponto = [];
-        ponto[0] = chav0[i].time;
-        ponto[1] = chav0[i].voltage;
-        pontos.push(ponto);
-        console.log(chav0[i].time + " " + chav0[i].voltage);
-    }
-    result = regression.linear(pontos, {precision: 5});
-    S0 = result.equation[0];
-    pontos = [];
-    console.log("S1");
-    for (i = 0; i < (chav1.length) * pcS1f; i++) {
-        let ponto = [];
-        ponto[0] = chav1[i].time;
-        ponto[1] = chav1[i].voltage;
-        pontos.push(ponto);
-        console.log(chav1[i].time + " " + chav1[i].voltage);
-    }
-    result = regression.linear(pontos, {precision: 5});
-    S1 = result.equation[0];
-    console.log("S0 " + S0 + "S1 " + S1);
-    C = (-S0 * 0.000022) / (S0 - S1);
-    console.log("Capacitância interna: " + C);
-}
-
-function calcPmp() {
-    let imaior = 0;
-
-    for (i = 0; i < ivMeasure.length; i++) {
-        if (po[i] > po[imaior]) {
-            imaior = i;
+    });
+    
+    let regression_result = regression.linear(points, {precision: 5});
+    let Rso = -1 / regression_result.equation[0];
+    
+    points = [];
+    ivMeasure.reduceRight( (lastPoint, measure) => {
+        if(measure.voltage < (Voc * pcVoc) && (lastPoint.length === 0 || (measure.voltage !== lastPoint.voltage))){
+            points = [...points, [measure.voltage, measure.current]];
+            return measure;
         }
-    }
-    Vmp = ivMeasure[imaior].voltage;
-    Imp = ivMeasure[imaior].current;
-    Pmp = po[imaior];
-    console.log('potencia: ' + Pmp);
+    }, []);
+
+    regression_result = regression.linear(points, {precision: 5});
+    let Rsho = -1 / regression_result.equation[0];
+    return {Rso, Rsho};
 }
 
-function calcCelik() {
+function extractCap(chav0, chav1) {
+        //change to split
+    let points = chav0.reduce( (acc, el, index ,arr) => {
+        if( (index+1) >= (arr.length * pcS0i) && (index+1) < (arr.length * pcS0f)){
+            return [...acc, [el.time, el.voltage]];    
+        }
+    }, []);
+
+    let regression_result = regression.linear(points, {precision: 5});
+    let S0 = regression_result.equation[0];
+    
+    points = chav1.reduce( (acc, el, index, arr) =>{
+        if((index+1) >= (arr.length * pcS1f)){
+            return [...acc, [el.time, el.voltage]];   
+        }
+    }, []);
+    
+    regression_result = regression.linear(points, {precision: 5});
+    let S1 = regression_result.equation[0];
+    
+    let C = (-S0 * 0.000022) / (S0 - S1);
+}
+
+function calcPmp(powerMeasure) {
+    let maxPower = powerMeasure.reduce((max_power, power) => {
+        if(max_power.power < power.power)
+            return power;
+    }, -1);
+
+    Vmp = max_power.voltage;
+    Imp = max_power.current;
+    Pmp = max_power.power;
+    return {Vmp, Imp, Pmp};
+}
+
+function calcCelik(Rsho, Rso, Vmp, Imp, Pmp, Voc, Isc ) {
     Rsh = Rsho;
     n = (Vmp + Rso * Imp - Voc) / (Vth * (Math.log(Isc - Vmp / Rsho - Imp) - Math.log(Isc - Voc / Rsh) + Imp / (Isc - Voc / Rsho)));
     Io = (Isc - Voc / Rsh) * Math.exp(-Voc / (n * Vth));
