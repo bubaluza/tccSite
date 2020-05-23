@@ -16,496 +16,486 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"
+    >
     <title>TCC</title>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
             integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-            crossorigin="anonymous"></script>
+            crossorigin="anonymous"
+    ></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-            crossorigin="anonymous"></script>
+            crossorigin="anonymous"
+    ></script>
     <script src="node_modules/chart.js/dist/chart.js"></script>
     <script src="node_modules/mathjs/dist/math.min.js"></script>
 </head>
 
 <body>
-<!-- Loader -->
-<div id="loader" style="position: fixed;
+    <!-- Loader -->
+    <div id="loader" style="position: fixed;
                 top: 0;
                 width: 100%;
                 height: 100%;
                 background: gray;
                 z-index: 1000;
                 opacity: 0.5;
-                display: none;">
-    <div class="progress">
-        <div class="progress-bar progress-bar-striped progress-bar-animated " id="progresso" role="progressbar"
-             style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                display: none;"
+    >
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated " id="progresso" role="progressbar"
+                 style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"
+            ></div>
+        </div>
     </div>
-</div>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Análise de Placas Solares</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
-            aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-    </button>
-</nav>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Análise de Placas Solares</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation"
+        >
+        </button>
+    </nav>
 
-<!--Container-->
-<div class="container-fluid">
+    <!--Container-->
+    <div class="container-fluid">
 
-    <div class="row">
+        <div class="row">
 
-        <!--Sidebar-->
-        <nav class="col-md-1  d-md-block bg-light sidebar" style="padding: 0;">
-            <div class="sidebar-sticky">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active disabled" id="atualizar" href="#">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                 stroke-linejoin="round" class="feather feather-home">
-                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                            </svg>
-                            Analisar
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
-        <!--Content-->
-        <main role="main" class="col-md-11 ml-sm-auto col-lg-11 pt-3 px-4">
-            <div class="alert alert-danger" id="usb_falha" role="alert" style="display: none">
-                A conexão com a USB <strong>FALHOU</strong>. Recoloque a USB e reinicie o servidor.
-            </div>
-            <div class="alert alert-success" id="usb_sucesso" role="alert" style="display: none">
-                USB conectada com Sucesso.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <h2>Gráficos</h2>
-            <div class="row">
-                <div class="col-sm-12 col-md-6 text-center">
-                    <canvas id="chart-1" width="400"></canvas>
-                    <br>
-                    <button class="btn btn-sm btn-outline-secondary" id="estaticoCsvDownload">Exportar CSV</button>
+            <!--Sidebar-->
+            <nav class="col-md-1  d-md-block bg-light sidebar" style="padding: 0;">
+                <div class="sidebar-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active disabled" id="atualizar" href="#">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="feather feather-home"
+                                >
+                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                </svg>
+                                Analisar
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="col-sm-12 col-md-6 text-center">
-                    <canvas id="chart-2" width="400"></canvas>
-                    <br>
-                    <button class="btn btn-sm btn-outline-secondary" id="dinamicoCsvDownload">Exportar CSV</button>
+            </nav>
+
+            <!--Content-->
+            <main role="main" class="col-md-11 ml-sm-auto col-lg-11 pt-3 px-4">
+                <div class="alert alert-danger" id="usb_falha" role="alert" style="display: none">
+                    A conexão com a USB <strong>FALHOU</strong>. Recoloque a USB e reinicie o servidor.
                 </div>
-            </div>
-
-            <h2>Análise</h2>
-
-            <div>
+                <div class="alert alert-success" id="usb_sucesso" role="alert" style="display: none">
+                    USB conectada com Sucesso.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <h2>Gráficos</h2>
                 <div class="row">
-                    <div class="col-sm-12 col-md-3">
-                        <div class="form-group">
-                            <label for="maxima_potencia">Máxima Potência</label>
-                            <input id="maxima_potencia" type="text" readonly class="form-control">
+                    <div class="col-sm-12 col-md-6 text-center">
+                        <canvas id="chart-1" width="400"></canvas>
+                        <br>
+                        <button class="btn btn-sm btn-outline-secondary" id="estaticoCsvDownload">Exportar CSV</button>
+                    </div>
+                    <div class="col-sm-12 col-md-6 text-center">
+                        <canvas id="chart-2" width="400"></canvas>
+                        <br>
+                        <button class="btn btn-sm btn-outline-secondary" id="dinamicoCsvDownload">Exportar CSV</button>
+                    </div>
+                </div>
+
+                <h2>Análise</h2>
+
+                <div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-group">
+                                <label for="maxima_potencia">Máxima Potência</label>
+                                <input id="maxima_potencia" type="text" readonly class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-group">
+                                <label for="tensao_maxima_potencia">Tensão de Máxima Potência</label>
+                                <input id="tensao_maxima_potencia" type="text" readonly class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-group">
+                                <label for="corrente_maxima_potencia">Corrente de Máxima Potência</label>
+                                <input type="text" readonly id="corrente_maxima_potencia" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-group">
+                                <label for="corrente_cc">Corrente de Curto-Circuito</label>
+                                <input type="text" readonly id="corrente_cc" class="form-control">
+                            </div>
                         </div>
                     </div>
-                    <div class="col-sm-12 col-md-3">
-                        <div class="form-group">
-                            <label for="tensao_maxima_potencia">Tensão de Máxima Potência</label>
-                            <input id="tensao_maxima_potencia" type="text" readonly class="form-control">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-group">
+                                <label for="tensao_ca">Tensão de Circuito aberto</label>
+                                <input type="text" readonly id="tensao_ca" class="form-control">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-12 col-md-3">
-                        <div class="form-group">
-                            <label for="corrente_maxima_potencia">Corrente de Máxima Potência</label>
-                            <input type="text" readonly id="corrente_maxima_potencia" class="form-control">
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-group">
+                                <label for="rs">Resistência em Serie</label>
+                                <input type="text" readonly id="rs" class="form-control">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-12 col-md-3">
-                        <div class="form-group">
-                            <label for="corrente_cc">Corrente de Curto-Circuito</label>
-                            <input type="text" readonly id="corrente_cc" class="form-control">
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-group">
+                                <label for="rp">Resistência em Paralelo</label>
+                                <input type="text" readonly id="rp" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-group">
+                                <label for="cd">Capacitância de Difusão</label>
+                                <input type="text" readonly id="cd" class="form-control">
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-12 col-md-3">
-                        <div class="form-group">
-                            <label for="tensao_ca">Tensão de Circuito aberto</label>
-                            <input type="text" readonly id="tensao_ca" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-3">
-                        <div class="form-group">
-                            <label for="rs">Resistência em Serie</label>
-                            <input type="text" readonly id="rs" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-3">
-                        <div class="form-group">
-                            <label for="rp">Resistência em Paralelo</label>
-                            <input type="text" readonly id="rp" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-3">
-                        <div class="form-group">
-                            <label for="cd">Capacitância de Difusão</label>
-                            <input type="text" readonly id="cd" class="form-control">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
+            </main>
+        </div>
     </div>
-</div>
-<footer id="sticky-footer" class="py-2 bg-dark text-white-50">
-    <div class="container text-center">
-        Universidade Estadual de Ponta Grossa - 2019 <br>
-        &copy; Created By: <span style="color: white;">Gabriel J. Schiller</span> & <span style="color: white;">Victor P. Iritsu</span>
+    <footer id="sticky-footer" class="py-2 bg-dark text-white-50">
+        <div class="container text-center">
+            Universidade Estadual de Ponta Grossa - 2019 <br>
+            &copy; Created By: <span style="color: white;">Gabriel J. Schiller</span> & <span style="color: white;">Victor P. Iritsu</span>
 
 
-    </div>
-</footer>
-<script type="text/javascript">
-    var csvEstatico;
-    var csvDinamico;
-    String.prototype.prefixo = function () {
-        string = this;
-        var n = string.search('e');
-        if (n != -1) {
-            var exp = string.substring(n + 1, string.length);
-            switch (exp) {
-                case '+3':
-                    return string.substring(0, n) + 'K';
-                    break;
-                case '+6':
-                    return string.substring(0, n) + 'M';
-                    break;
-                case '+9':
-                    return string.substring(0, n) + 'G';
-                    break;
-                case '-3':
-                    return string.substring(0, n) + 'm';
-                    break;
-                case '-6':
-                    return string.substring(0, n) + 'µ';
-                    break;
-                case '-9':
-                    return string.substring(0, n) + 'n';
-                    break
-                case '-12':
-                    return string.substring(0, n) + 'p';
-                    break;
-                default:
-                    return string.substring(0, n);
-            }
-        } else {
-            return string;
-        }
-    }
+        </div>
+    </footer>
+    <script type="text/javascript">
+        let csvEstatico;
+        let csvDinamico;
+        let interval;
+        let ctx1 = $('#chart-1');
+        let ctx2 = $('#chart-2');
 
-    $(document).ready(function () {
-        $.ajax({
-            type: 'get',
-            url: '/ajaxConecao',
-            success: (response) => {
-                if (!response.conexao) {
-                    $("#usb_falha").show('1000');
-                } else {
-                    $("#usb_sucesso").show('1000');
-                    $("#atualizar").removeClass('disabled');
-                    setTimeout(function () {
-                        $("#usb_sucesso").fadeOut('1000');
-                    }, 5000);
+        String.prototype.prefixo = function () {
+            let string = this;
+            let n = string.search('e');
+            if (n !== -1) {
+                let exp = string.substring(n + 1, string.length);
+                switch (exp) {
+                    case '+3':
+                        return string.substring(0, n) + 'K';
+                    case '+6':
+                        return string.substring(0, n) + 'M';
+                    case '+9':
+                        return string.substring(0, n) + 'G';
+                    case '-3':
+                        return string.substring(0, n) + 'm';
+                    case '-6':
+                        return string.substring(0, n) + 'µ';
+                    case '-9':
+                        return string.substring(0, n) + 'n';
+                    case '-12':
+                        return string.substring(0, n) + 'p';
+                    default:
+                        return string.substring(0, n);
                 }
-            },
-            error: (response) => {
-                console.log(response)
+            } else {
+                return string;
             }
+        }
+
+        $(document).ready(function () {
+            $.ajax({
+                       type:    'get',
+                       url:     '/ajaxConecao',
+                       success: (response) => {
+                           if (!response.usbConnection) {
+                               $("#usb_falha").show(1000);
+                           } else {
+                               $("#usb_sucesso").show(1000);
+                               $("#atualizar").removeClass('disabled');
+                               setTimeout(function () {
+                                   $("#usb_sucesso").fadeOut('1000');
+                               }, 5000);
+                           }
+                       },
+                       error:   (response) => {
+                           console.log(response)
+                       }
+                   });
         });
-    });
 
-    $('#atualizar').click(function () {
-        $('#progresso').css('width', '0%');
-        $('#loader').fadeIn(1000);
-        $.ajax({
-            type: 'get',
-            url: '/ajaxSet',
-            success: (response) => {
-                interval = setInterval(verificaResposta, 200);
-            },
-            error: (response) => {
-                console.log(response)
-            }
+        $('#atualizar').click(function () {
+            $('#progresso').css('width', '0%');
+            $('#loader').fadeIn(1000);
+            $.ajax({
+                       type:    'get',
+                       url:     '/ajaxSet',
+                       success: () => {
+                           interval = setInterval(verificaResposta, 200);
+                       },
+                       error:   (response) => {
+                           console.log(response)
+                       }
+                   });
         });
-    });
 
-    var ctx1 = $('#chart-1');
-    var ctx2 = $('#chart-2');
-
-    var estatico = new Chart(ctx1, {
-        type: 'scatter',
-        data: {
-            datasets: [{
-                label: 'IV',
-                yAxisID: 'corrente',
-                backgroundColor: '#003bff',
-            }, {
-                label: 'Potência',
-                yAxisID: 'potencia',
-                backgroundColor: 'red',
-            }],
-        },
-        options: {
-            tooltips: {
-                callbacks: {
-                    title: function (tooltipItem, data) {
-                        return data['datasets'][tooltipItem[0].datasetIndex].label;
-                    },
-                    label: function (tooltipItem, data) {
-                        let x = parseFloat((tooltipItem.label)).toFixed(4);
-                        return x + ' V';
-                    },
-                    afterLabel: function (tooltipItem, data) {
-                        let y;
-                        if (tooltipItem.datasetIndex == 0) {
-                            y = math.format(parseFloat((tooltipItem.value)), {
-                                notation: 'engineering',
-                                precision: 4
-                            }).prefixo();
-                            y = y + ' A';
-                        } else {
-                            y = math.format(parseFloat((tooltipItem.value)), {
-                                notation: 'engineering',
-                                precision: 4
-                            }).prefixo();
-                            y = y + ' W';
-                        }
-                        return y;
-                    }
-                },
-                backgroundColor: '#000000',
-                titleFontSize: 14,
-                titleFontColor: '#ffeb00',
-                bodyFontColor: '#08f86d',
-                bodyFontSize: 12,
-                displayColors: false
-            },
-            title: {
-                display: true,
-                text: 'Curva IV e Potência'
-            },
-            scales: {
-                yAxes: [{
-                    type: 'linear',
-                    display: true,
-                    position: 'left',
-                    id: 'corrente',
-                    ticks: {
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Corrente (A)'
-                    }
+        let estatico = new Chart(ctx1, {
+            type:    'scatter',
+            data:    {
+                datasets: [{
+                    label:           'IV',
+                    yAxisID:         'corrente',
+                    backgroundColor: '#003bff',
                 }, {
-                    type: 'linear',
-                    display: true,
-                    position: 'right',
-                    id: 'potencia',
-                    ticks: {
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Potência (W)'
-                    },
-
+                    label:           'Potência',
+                    yAxisID:         'potencia',
+                    backgroundColor: 'red',
                 }],
-                xAxes: [{
-                    type: 'linear',
-                    display: true,
-                    position: 'bottom',
-                    ticks: {
-                        beginAtZero: true
+            },
+            options: {
+                tooltips: {
+                    callbacks:       {
+                        title:      (tooltipItem, data) => {
+                            return data['datasets'][tooltipItem[0].datasetIndex].label;
+                        },
+                        label:      (tooltipItem) => {
+                            let x = parseFloat((tooltipItem.label)).toFixed(4);
+                            return x + ' V';
+                        },
+                        afterLabel: (tooltipItem) => {
+                            let y;
+                            if (tooltipItem.datasetIndex === 0) {
+                                y = math.format(parseFloat((tooltipItem.value)), {
+                                    notation:  'engineering',
+                                    precision: 4
+                                }).prefixo();
+                                y = y + ' A';
+                            } else {
+                                y = math.format(parseFloat((tooltipItem.value)), {
+                                    notation:  'engineering',
+                                    precision: 4
+                                }).prefixo();
+                                y = y + ' W';
+                            }
+                            return y;
+                        }
                     },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Tensão (V)'
-                    }
-                }]
-            }
-        }
-    });
-
-    var dinamico = new Chart(ctx2, {
-        type: 'line',
-        data: {
-            datasets: [{
-                label: 'dinâmico',
-                borderColor: '#9e00ff',
-                backgroundColor: '#d60cff',
-                lineTension: 0,
-                fill: false,
-            }]
-        },
-        options: {
-            tooltips: {
-                callbacks: {
-                    title: function (tooltipItem, data) {
-                        return data['datasets'][tooltipItem[0].datasetIndex].label;
-                    },
-                    label: function (tooltipItem, data) {
-                        let x = parseFloat((tooltipItem.label)).toFixed(0);
-                        return x + 'µ S';
-                    },
-                    afterLabel: function (tooltipItem, data) {
-                        let y = parseFloat((tooltipItem.value)).toFixed(4) + ' V'
-                        return y;
-                    }
+                    backgroundColor: '#000000',
+                    titleFontSize:   14,
+                    titleFontColor:  '#ffeb00',
+                    bodyFontColor:   '#08f86d',
+                    bodyFontSize:    12,
+                    displayColors:   false
                 },
-                backgroundColor: '#000000',
-                titleFontSize: 14,
-                titleFontColor: '#ffeb00',
-                bodyFontColor: '#08f86d',
-                bodyFontSize: 12,
-                displayColors: false
-            },
-            title: {
-                display: true,
-                text: 'Tensão na placa conforme Chaveamento'
-            },
-            scales: {
-                xAxes: [{
-                    type: 'linear',
-                    position: 'bottom',
-                    id: 'dinamico',
-                    ticks: {
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Tempo (µ S)'
-                    }
-                }],
-                yAxes: [{
-                    type: 'linear',
-                    position: 'bottom',
-                    ticks: {
-                        beginAtZero: true
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Tensão (V)'
-                    }
-                }]
-            }
-        }
-    });
+                title:    {
+                    display: true,
+                    text:    'Curva IV e Potência'
+                },
+                scales:   {
+                    yAxes: [{
+                        type:       'linear',
+                        display:    true,
+                        position:   'left',
+                        id:         'corrente',
+                        ticks:      {
+                            beginAtZero: true
+                        },
+                        scaleLabel: {
+                            display:     true,
+                            labelString: 'Corrente (A)'
+                        }
+                    }, {
+                        type:       'linear',
+                        display:    true,
+                        position:   'right',
+                        id:         'potencia',
+                        ticks:      {
+                            beginAtZero: true
+                        },
+                        scaleLabel: {
+                            display:     true,
+                            labelString: 'Potência (W)'
+                        },
 
-
-    function verificaResposta() {
-        $.ajax({
-            type: 'get',
-            url: '/ajaxMain',
-            success: (response) => {
-                if (response.erro) {
-                    $('#loader').fadeOut(1000);
-                    alert("Houve um erro.");
-                    clearInterval(interval);
-                } else if (!response.chegou) {
-                    $('#resposta').val(response.progresso);
-                    $('#progresso').css('width', response.progresso + '%');
-                    return;
-                } else if (response.chegou) {
-                    console.log(response)
-                    csvEstatico = 'voltage,current,power\n';
-                    response.dadosIv.forEach(function (e, k) {
-                        csvEstatico += e.voltage;
-                        csvEstatico += ',' + e.current;
-                        csvEstatico += ',' + response.pot[k].power;
-                        csvEstatico += '\n';
-                    })
-                    csvDinamico = 'time,voltage\n';
-                    response.din.forEach(function (e) {
-                        csvDinamico += e.time;
-                        csvDinamico += ',' + e.voltage;
-                        csvDinamico += '\n';
-                    });
-
-                    var dadosIv = response.dadosIv.map(function (d) {
-                        var t = {};
-                        t.x = d.voltage;
-                        t.y = d.current;
-                        return t;
-                    });
-                    var dadosPot = response.pot.map(function (d) {
-                        var t = {};
-                        t.x = d.voltage;
-                        t.y = d.power;
-                        return t;
-                    });
-                    var dadosDin = response.din.map(function (d) {
-                        var t = {};
-                        t.x = d.time;
-                        t.y = d.voltage;
-                        return t;
-                    });
-                    estatico.data.datasets[0].data = dadosIv;
-                    estatico.data.datasets[1].data = dadosPot;
-                    dinamico.data.datasets[0].data = dadosDin;
-                    estatico.update();
-                    dinamico.update();
-                    $('#maxima_potencia').val(math.format(response.maxima_potencia, {precision: 4}).prefixo() + ' W');
-                    $('#tensao_maxima_potencia').val(math.format(response.tensao_maxima_potencia, {precision: 4}).prefixo() + ' V');
-                    $('#corrente_maxima_potencia').val(math.format(response.corrente_maxima_potencia, {
-                        notation: 'engineering',
-                        precision: 4
-                    }).prefixo() + ' A');
-                    $('#corrente_cc').val(math.format(response.corrente_cc, {
-                        notation: 'engineering',
-                        precision: 4
-                    }).prefixo() + ' A');
-                    $('#tensao_ca').val(math.format(response.tensao_ca, {precision: 4}).prefixo() + ' V');
-                    $('#rs').val(math.format(response.rs, {precision: 4}).prefixo() + ' Ω');
-                    $('#rp').val(math.format(response.rp, {precision: 4}).prefixo() + ' Ω');
-                    $('#cd').val(math.format(response.cd, {notation: 'engineering', precision: 4}).prefixo() + ' F')
-                    clearInterval(interval);
-                    $('#loader').fadeOut(1000);
+                    }],
+                    xAxes: [{
+                        type:       'linear',
+                        display:    true,
+                        position:   'bottom',
+                        ticks:      {
+                            beginAtZero: true
+                        },
+                        scaleLabel: {
+                            display:     true,
+                            labelString: 'Tensão (V)'
+                        }
+                    }]
                 }
+            }
+        });
+
+        let dinamico = new Chart(ctx2, {
+            type:    'line',
+            data:    {
+                datasets: [{
+                    label:           'dinâmico',
+                    borderColor:     '#9e00ff',
+                    backgroundColor: '#d60cff',
+                    lineTension:     0,
+                    fill:            false,
+                }]
             },
-            error: (response) => {
-                console.log(response);
+            options: {
+                tooltips: {
+                    callbacks:       {
+                        title:      (tooltipItem, data) => {
+                            return data['datasets'][tooltipItem[0].datasetIndex].label;
+                        },
+                        label:      (tooltipItem) => {
+                            return parseFloat((tooltipItem.label)).toFixed(0) + 'µ S';
+                        },
+                        afterLabel: (tooltipItem) => {
+                            return parseFloat((tooltipItem.value)).toFixed(4) + ' V';
+                        }
+                    },
+                    backgroundColor: '#000000',
+                    titleFontSize:   14,
+                    titleFontColor:  '#ffeb00',
+                    bodyFontColor:   '#08f86d',
+                    bodyFontSize:    12,
+                    displayColors:   false
+                },
+                title:    {
+                    display: true,
+                    text:    'Tensão na placa conforme Chaveamento'
+                },
+                scales:   {
+                    xAxes: [{
+                        type:       'linear',
+                        position:   'bottom',
+                        id:         'dinamico',
+                        ticks:      {
+                            beginAtZero: true
+                        },
+                        scaleLabel: {
+                            display:     true,
+                            labelString: 'Tempo (µ S)'
+                        }
+                    }],
+                    yAxes: [{
+                        type:       'linear',
+                        position:   'bottom',
+                        ticks:      {
+                            beginAtZero: true
+                        },
+                        scaleLabel: {
+                            display:     true,
+                            labelString: 'Tensão (V)'
+                        }
+                    }]
+                }
+            }
+        });
+
+
+        function verificaResposta() {
+            $.ajax({
+                       type:    'get',
+                       url:     '/ajaxMain',
+                       success: (response) => {
+                           if (response.err) {
+                               $('#loader').fadeOut(1000);
+                               alert("Houve um erro.");
+                               clearInterval(interval);
+                           } else if (!response.chegou) {
+                               $('#resposta').val(response.progresso);
+                               $('#progresso').css('width', response.progresso + '%');
+                           } else if (response.chegou) {
+                               let {ivMeasure, dynamicMeasure, powerMeasure, Vmp, Imp, Pmp, Isc, Voc, Rs, Rp, C} = response;
+                               csvEstatico = 'voltage,current,power\n';
+                               ivMeasure.forEach(({voltage, current}, k) => csvEstatico += `${voltage},${current},${powerMeasure[k]}\n`)
+                               csvDinamico = 'time,voltage\n';
+                               dynamicMeasure.forEach(({time, voltage}) => csvDinamico += `${time},${voltage}\n`);
+
+                               ivMeasure = ivMeasure.map(({voltage, current}) => ({
+                                   x: voltage,
+                                   y: current
+                               }));
+
+                               powerMeasure = powerMeasure.map(({voltage, power}) => ({
+                                   x: voltage,
+                                   y: power
+                               }));
+
+                               dynamicMeasure = dynamicMeasure.map(({time, voltage}) => ({
+                                   x: time,
+                                   y: voltage
+                               }));
+
+                               estatico.data.datasets[0].data = ivMeasure;
+                               estatico.data.datasets[1].data = powerMeasure;
+                               dinamico.data.datasets[0].data = dynamicMeasure;
+                               estatico.update();
+                               dinamico.update();
+
+                               $('#maxima_potencia').val(math.format(Pmp, {precision: 4}).prefixo() + ' W');
+                               $('#tensao_maxima_potencia').val(math.format(Vmp, {precision: 4}).prefixo() + ' V');
+                               $('#corrente_maxima_potencia').val(math.format(Imp, {
+                                   notation:  'engineering',
+                                   precision: 4
+                               }).prefixo() + ' A');
+                               $('#corrente_cc').val(math.format(Isc, {
+                                   notation:  'engineering',
+                                   precision: 4
+                               }).prefixo() + ' A');
+                               $('#tensao_ca').val(math.format(Voc, {precision: 4}).prefixo() + ' V');
+                               $('#rs').val(math.format(Rs, {precision: 4}).prefixo() + ' Ω');
+                               $('#rp').val(math.format(Rp, {precision: 4}).prefixo() + ' Ω');
+                               $('#cd').val(math.format(C, {
+                                   notation:  'engineering',
+                                   precision: 4
+                               }).prefixo() + ' F')
+                               clearInterval(interval);
+                               $('#loader').fadeOut(1000);
+                           }
+                       },
+                       error:   (response) => {
+                           console.log(response);
+                       }
+                   })
+        }
+
+        $('#estaticoCsvDownload').click(function () {
+            if (csvEstatico) {
+                let csv = document.createElement('a');
+                csv.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvEstatico);
+                csv.target = '_blank';
+                csv.download = 'estatico.csv';
+                csv.click();
+            } else {
+                alert('Nenhum dado para criar o arquico CSV.');
             }
         })
-    }
 
-    $('#estaticoCsvDownload').click(function () {
-        if (csvEstatico) {
-            var csv = document.createElement('a');
-            csv.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvEstatico);
-            csv.target = '_blank';
-            csv.download = 'estatico.csv';
-            csv.click();
-        } else {
-            alert('Nenhum dado para criar o arquico CSV.');
-        }
-    })
-
-    $('#dinamicoCsvDownload').click(function () {
-        if (csvDinamico) {
-            var csv = document.createElement('a');
-            csv.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvDinamico);
-            csv.target = '_blank';
-            csv.download = 'dinamico.csv';
-            csv.click();
-        } else {
-            alert('Nenhum dado para criar o arquico CSV.');
-        }
-    })
-</script>
+        $('#dinamicoCsvDownload').click(function () {
+            if (csvDinamico) {
+                let csv = document.createElement('a');
+                csv.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvDinamico);
+                csv.target = '_blank';
+                csv.download = 'dinamico.csv';
+                csv.click();
+            } else {
+                alert('Nenhum dado para criar o arquico CSV.');
+            }
+        })
+    </script>
 </body>
 </html>
